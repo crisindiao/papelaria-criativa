@@ -50,7 +50,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 .cpulse{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;opacity:0.9}
 .cbar-icon{font-size:16px}
 
-.pg{display:none;padding-bottom:60px}
+.pg{display:none;padding-bottom:60px;padding-top:0}
 .pg.act{display:block}
 .s-hero{background:linear-gradient(135deg,var(--rose-p),#fff);padding:32px 16px 22px;text-align:center;border-bottom:1px solid var(--border)}
 .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--rose);font-weight:600;margin-bottom:8px}
@@ -264,13 +264,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 .cbar2-badge{background:rgba(255,255,255,0.25);border-radius:10px;padding:2px 8px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,0.4)}
 
 
-/* Seção Vídeo */
-.video-section{padding:40px 16px;max-width:500px;margin:0 auto;text-align:center}
-.video-btn-wrap{display:block;text-decoration:none;max-width:240px;margin:0 auto}
-.video-thumb{background:linear-gradient(135deg,var(--rose),var(--rose-l));border-radius:18px;aspect-ratio:9/16;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 8px 32px rgba(196,115,106,.30);transition:transform .2s,box-shadow .2s;max-width:240px}
-.video-btn-wrap:hover .video-thumb{transform:translateY(-4px);box-shadow:0 14px 36px rgba(196,115,106,.40)}
-.video-play-icon{width:64px;height:64px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--rose);box-shadow:0 4px 16px rgba(0,0,0,.15)}
-.video-play-label{color:#fff;font-size:13px;font-weight:700;text-align:center;padding:0 16px;line-height:1.4}
+
 
 
 /* Botão voltar */
@@ -312,6 +306,42 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 .pol-card-desc{font-size:10px;color:var(--soft);margin-bottom:6px}
 .pol-card-price{font-size:13px;font-weight:700;color:var(--rose);font-family:'Playfair Display',serif}
 
+
+/* Como funciona */
+.como-funciona{padding:32px 16px;max-width:900px;margin:0 auto}
+.como-steps{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.como-step{flex:1;min-width:140px;max-width:180px;text-align:center;padding:16px 12px;background:rgba(255,255,255,0.88);border-radius:14px;border:1.5px solid rgba(232,168,158,0.35);box-shadow:0 2px 10px rgba(196,115,106,.10)}
+.como-step-num{width:36px;height:36px;border-radius:50%;background:var(--rose);color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.como-step-icon{font-size:28px;margin-bottom:8px}
+.como-step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.como-step-desc{font-size:11px;color:var(--soft);line-height:1.5}
+.como-arrow{font-size:20px;color:var(--rose-l);align-self:center;display:none}
+@media(min-width:400px){.como-arrow{display:block}}
+
+/* Selos de confiança */
+.selos{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:16px 14px;max-width:900px;margin:0 auto}
+.selo{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.88);border:1.5px solid rgba(232,168,158,0.35);border-radius:50px;padding:8px 16px;box-shadow:0 2px 8px rgba(196,115,106,.10)}
+.selo-icon{font-size:18px}
+.selo-text{font-size:12px;font-weight:700;color:var(--text)}
+
+/* Pagamentos */
+.pagamentos{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;padding:12px 14px;border-top:1px solid var(--border);margin-top:8px}
+.pag-label{font-size:11px;color:var(--soft);font-weight:500;margin-right:4px}
+.pag-badge{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#333}
+.pag-badge.pix{background:#32BCAD;color:#fff;border-color:#32BCAD}
+.pag-badge.credito{background:#1a1f71;color:#fff;border-color:#1a1f71}
+.pag-badge.debito{background:#f7941d;color:#fff;border-color:#f7941d}
+
+
+#pages-wrapper{position:relative;min-height:100vh}
+
+
+/* Mini header das subpáginas */
+.sub-header{display:none;position:fixed;top:0;left:0;right:0;z-index:600;background:rgba(255,250,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 16px;align-items:center;justify-content:space-between}
+.sub-header.vis{display:flex}
+.sub-header-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--rose)}
+.sub-back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--rose);font-weight:700;font-size:13px;cursor:pointer;padding:6px 10px;border-radius:50px;background:var(--rose-p)}
+
 </style>
 </head>
 <body>
@@ -348,6 +378,10 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
   </div>
 </div>
 
+
+
+
+
 <button class="cfab" id="cfab" onclick="openCart()">🛒 <span id="fabN">0</span> iten(s) · R$ <span id="fabT">0,00</span></button>
 
 <div class="co" id="co" onclick="closeCart()"></div>
@@ -366,6 +400,17 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 
 <div class="toast" id="toast">✅ Adicionado!</div>
 
+
+<!-- Sub-header das subpáginas -->
+<div class="sub-header" id="sub-header">
+  <button class="sub-back-btn" onclick="showPg('home')">← Início</button>
+  <span class="sub-header-title" id="sub-header-title">Produtos</span>
+  <div style="width:80px;text-align:right">
+    <button class="cfab" id="cfab2" style="position:relative;bottom:auto;right:auto;display:none;padding:6px 12px;font-size:12px" onclick="openCart()">🛒 <span id="fabN2">0</span></button>
+  </div>
+</div>
+
+<div id="pages-wrapper">
 <!-- HOME -->
 <div id="pg-home" class="pg act">
   <div class="hero">
@@ -373,41 +418,60 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
     <div class="h-name">IMAGINAE</div>
     <div class="h-sub">Papelaria Criativa</div>
     <div class="h-tag">"Você imagina e a gente cria"</div>
-    <div class="h-badges">
-      <span class="hbadge">🚀 Entrega em até 1 dia</span>
-      <span class="hbadge">🇧🇷 Todo o Brasil</span>
-      <span class="hbadge">💳 Cartão · Pix · Débito</span>
-      <span class="hbadge">🎨 Criamos a arte pra você</span>
-    </div>
-    <div class="h-shortcuts">
-      <div class="shortcut" onclick="showPg('bottons')"><span class="sc-icon">📌</span><span class="sc-label">Bottons</span></div>
-      <div class="shortcut" onclick="showPg('marcapaginas')"><span class="sc-icon">🔖</span><span class="sc-label">Marca-Páginas</span></div>
-      <div class="shortcut" onclick="showPg('lembrancinhas')"><span class="sc-icon">🎀</span><span class="sc-label">Lembrancinhas</span></div>
-      <div class="shortcut" onclick="document.getElementById('dep-a').scrollIntoView({behavior:'smooth'})"><span class="sc-icon">⭐</span><span class="sc-label">Depoimentos</span></div>
-      <div class="shortcut" onclick="showPg('personalizados')"><span class="sc-icon">✨</span><span class="sc-label">Personalizados</span></div>
+    <div class="selos" style="margin:16px 0 4px">
+      <div class="selo"><span class="selo-icon">👥</span><span class="selo-text">+100 clientes atendidos</span></div>
+      <div class="selo"><span class="selo-icon">🚚</span><span class="selo-text">Entrega garantida</span></div>
+      <div class="selo"><span class="selo-icon">📦</span><span class="selo-text">Entrega em 2 a 5 dias úteis</span></div>
+      <div class="selo"><span class="selo-icon">🎨</span><span class="selo-text">Criamos a arte pra você</span></div>
     </div>
   </div>
 
-  
+  <div class="h-shortcuts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:340px;margin:20px auto;padding:0 16px">
+    <div class="shortcut" onclick="showPg('bottons')"><span class="sc-icon">📌</span><span class="sc-label">Bottons</span></div>
+    <div class="shortcut" onclick="showPg('marcapaginas')"><span class="sc-icon">🔖</span><span class="sc-label">Marca-Páginas</span></div>
+    <div class="shortcut" onclick="showPg('lembrancinhas')"><span class="sc-icon">🎀</span><span class="sc-label">Lembrancinhas</span></div>
+    <div class="shortcut" onclick="document.getElementById('dep-a').scrollIntoView({behavior:'smooth'})"><span class="sc-icon">⭐</span><span class="sc-label">Depoimentos</span></div>
+    <div class="shortcut" onclick="showPg('personalizados')"><span class="sc-icon">✨</span><span class="sc-label">Personalizados</span></div>
+  </div>
 
-  <!-- Seção Vídeo -->
-  <div class="video-section">
-    <p class="eyebrow">✦ Veja em ação ✦</p>
-    <h2 class="s-title" style="margin-bottom:16px">Nossos Produtos</h2>
-    <a href="https://youtube.com/shorts/Vl6uVz4rXCQ" target="_blank" class="video-btn-wrap">
-      <div class="video-thumb">
-        <div class="video-play-icon">▶</div>
-        <div class="video-play-label">Assistir Short no YouTube</div>
+  </div>
+
+
+  <!-- Como Funciona -->
+  <div class="como-funciona">
+    <p class="eyebrow" style="text-align:center">✦ Simples assim ✦</p>
+    <h2 class="s-title" style="text-align:center;margin-bottom:20px">Como Funciona</h2>
+    <div class="como-steps">
+      <div class="como-step">
+        <div class="como-step-icon">🛍️</div>
+        <div class="como-step-num">1</div>
+        <div class="como-step-title">Escolha seu produto</div>
+        <div class="como-step-desc">Navegue pelas categorias e encontre o que você procura</div>
       </div>
-    </a>
-    <p style="margin-top:14px;font-size:13px;color:var(--soft)">
-      Gostou? 
-      <a href="https://youtube.com/@imaginae.papelaria" target="_blank" 
-         style="color:var(--rose);font-weight:600;text-decoration:none">
-        📺 Veja mais no canal
-      </a>
-    </p>
+      <div class="como-arrow">→</div>
+      <div class="como-step">
+        <div class="como-step-icon">✏️</div>
+        <div class="como-step-num">2</div>
+        <div class="como-step-title">Personalize do seu jeito</div>
+        <div class="como-step-desc">Escolha o modelo, tamanho, quantidade e acabamento</div>
+      </div>
+      <div class="como-arrow">→</div>
+      <div class="como-step">
+        <div class="como-step-icon">💬</div>
+        <div class="como-step-num">3</div>
+        <div class="como-step-title">Envie o pedido pelo site</div>
+        <div class="como-step-desc">Clique em "Enviar pelo WhatsApp" e finalize direto comigo!</div>
+      </div>
+      <div class="como-arrow">→</div>
+      <div class="como-step">
+        <div class="como-step-icon">📦</div>
+        <div class="como-step-num">4</div>
+        <div class="como-step-title">Receba em casa</div>
+        <div class="como-step-desc">Entrega em 2 a 5 dias úteis para todo o Brasil</div>
+      </div>
+    </div>
   </div>
+
 
   <!-- Seção Quem Faz -->
   <div class="quem-faz">
@@ -487,6 +551,8 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Vocês fazem arte personalizada? <span class="farrow">+</span></div><div class="fa">Sim! Escolha "Criação de Arte" nos Bottons Personalizados. Apenas R$ 2,00 a mais por unidade.</div></div>
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Qual é o prazo de entrega? <span class="farrow">+</span></div><div class="fa">Produção em 1 a 2 dias úteis após confirmação. Entrega em até 2 a 5 dias úteis dependendo da sua região!</div></div>
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Enviam para todo o Brasil? <span class="farrow">+</span></div><div class="fa">Sim! Enviamos para todo o território nacional.</div></div>
+    <div class="fitem"><div class="fq" onclick="tfaq(this)">Qual a política de troca? <span class="farrow">+</span></div><div class="fa">Se o produto chegar com defeito, fazemos a troca em até 2 dias após o recebimento. Entre em contato pelo WhatsApp com foto do produto e do defeito.</div></div>
+    <div class="fitem"><div class="fq" onclick="tfaq(this)">Quais formas de pagamento? <span class="farrow">+</span></div><div class="fa">Aceitamos PIX, cartão de crédito e cartão de débito. O pagamento é combinado diretamente pelo WhatsApp após o pedido.</div></div>
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Qual é o pedido mínimo? <span class="farrow">+</span></div><div class="fa">Mínimo de 1 unidade.</div></div>
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Formas de pagamento? <span class="farrow">+</span></div><div class="fa">Cartão de crédito/débito, Pix e Débito.</div></div>
     <div class="fitem"><div class="fq" onclick="tfaq(this)">Quais tamanhos disponíveis? <span class="farrow">+</span></div><div class="fa">32mm (pequeno), 44mm (médio) e 58mm (grande).</div></div>
@@ -495,7 +561,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 
 <!-- BOTTONS -->
 <div id="pg-bottons" class="pg">
-  <button class="back-btn" onclick="showPg('home')">🏠 Voltar ao Início</button>
+  
   <div class="s-hero"><p class="eyebrow">✦ Coleção ✦</p><h2 class="s-title">Bottons</h2><p class="s-body">Alta qualidade para todas as ocasiões!</p></div>
   <div style="max-width:900px;margin:0 auto">
     <div class="stabs">
@@ -595,7 +661,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 
 <!-- MARCA-PÁGINAS -->
 <div id="pg-marcapaginas" class="pg">
-  <button class="back-btn" onclick="showPg('home')">🏠 Voltar ao Início</button>
+  
   <div class="s-hero">
     <p class="eyebrow">✦ Novidade ✦</p>
     <h2 class="s-title">Marca-Páginas</h2>
@@ -726,14 +792,14 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 
 <!-- LEMBRANCINHAS -->
 <div id="pg-lembrancinhas" class="pg">
-  <button class="back-btn" onclick="showPg('home')">🏠 Voltar ao Início</button>
+  
   <div class="s-hero"><p class="eyebrow">✦ Em breve ✦</p><h2 class="s-title">Lembrancinhas</h2><p class="s-body">Uma coleção especial sendo preparada!</p></div>
   <div style="padding:28px 14px;max-width:600px;margin:0 auto"><div class="cs"><div class="cs-i">🎀</div><h3>Lembrancinhas</h3><p>Em breve! Siga nossas redes sociais.</p></div></div>
 </div>
 
 <!-- PERSONALIZADOS -->
 <div id="pg-personalizados" class="pg">
-  <button class="back-btn" onclick="showPg('home')">🏠 Voltar ao Início</button>
+  
   <div class="s-hero">
     <p class="eyebrow">✦ Personalizados ✦</p>
     <h2 class="s-title">Personalizados</h2>
@@ -980,6 +1046,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
         </div>
 
   </div>
+</div><!-- /pages-wrapper -->
 
 <!-- FOOTER -->
 <footer class="foot">
@@ -1002,10 +1069,61 @@ let upFiles=[];
 const fmt=v=>'R$ '+v.toFixed(2).replace('.',',');
 
 function showPg(s){
+  var isHome = s === 'home';
+  var titles = {bottons:'Bottons',marcapaginas:'Marca-Páginas',lembrancinhas:'Lembrancinhas',personalizados:'Personalizados'};
+
+  // Mostrar/esconder páginas
   document.querySelectorAll('.pg').forEach(e=>e.classList.remove('act'));
   document.getElementById('pg-'+s).classList.add('act');
-  window.scrollTo({top:0,behavior:'smooth'});
-  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Elementos da home
+  var els = ['.hdr','.foot','.cbar-wrap','.live-widget','#pages-wrapper'];
+  els.forEach(function(sel){
+    var el = document.querySelector(sel);
+    if(el) el.style.display = isHome ? '' : 'none';
+  });
+
+  // Mostrar só a página ativa quando não é home
+  if(!isHome){
+    var pg = document.getElementById('pg-'+s);
+    if(pg){
+      pg.style.display = 'block';
+      pg.style.position = 'fixed';
+      pg.style.top = '0';
+      pg.style.left = '0';
+      pg.style.right = '0';
+      pg.style.bottom = '0';
+      pg.style.zIndex = '500';
+      pg.style.overflowY = 'auto';
+      pg.style.background = '#fff8f5';
+      pg.style.paddingTop = '60px';
+    }
+    // Sub-header
+    var subHeader = document.getElementById('sub-header');
+    var subTitle = document.getElementById('sub-header-title');
+    if(subHeader) subHeader.classList.add('vis');
+    if(subTitle && titles[s]) subTitle.textContent = titles[s];
+  } else {
+    // Voltar home: resetar estilos de todas as pg
+    document.querySelectorAll('.pg').forEach(function(pg){
+      pg.style.position = '';
+      pg.style.top = '';
+      pg.style.left = '';
+      pg.style.right = '';
+      pg.style.bottom = '';
+      pg.style.zIndex = '';
+      pg.style.overflowY = '';
+      pg.style.background = '';
+      pg.style.paddingTop = '';
+      pg.style.display = '';
+    });
+    var subHeader = document.getElementById('sub-header');
+    if(subHeader) subHeader.classList.remove('vis');
+    // Restaurar pages-wrapper
+    var pw = document.querySelector('#pages-wrapper');
+    if(pw) pw.style.display = '';
+  }
+  window.scrollTo(0, 0);
 }
 function showSub(s,btn){
   document.querySelectorAll('.scon').forEach(e=>e.classList.remove('act'));
@@ -1097,7 +1215,6 @@ function openPdModal(mid, name, imgSrc) {
   pdCalc();
   var overlay = document.getElementById('pdOverlay');
   overlay.classList.add('open');
-  // iOS fix: prevent background scroll
   var scrollY = window.scrollY;
   document.body.style.position = 'fixed';
   document.body.style.top = '-' + scrollY + 'px';
@@ -1108,12 +1225,10 @@ function openPdModal(mid, name, imgSrc) {
 function closePdModal(e) {
   if (e && e.target !== document.getElementById('pdOverlay')) return;
   document.getElementById('pdOverlay').classList.remove('open');
-  // iOS fix: restore scroll position
-  var scrollY = document.body.dataset.scrollY || 0;
   document.body.style.position = '';
   document.body.style.top = '';
   document.body.style.width = '';
-  window.scrollTo(0, parseInt(scrollY));
+  window.scrollTo(0, 0);
 }
 
 function pdQtyChange(delta) {
@@ -1204,10 +1319,7 @@ function openMpModal(id){
   const sel = document.getElementById('mp-modelo');
   if(sel){ sel.value = id; mpModeloChange(); }
   const form = document.getElementById('mp-form-section');
-  if(form){
-    form.style.display = 'block';
-    form.scrollIntoView({behavior:'smooth', block:'start'});
-  }
+  if(form){ form.style.display = 'block'; }
 }
 
 // Widget visitantes ao vivo
@@ -1313,7 +1425,10 @@ function openEspModal(id, nome){
 function closeEspModal(e){
   if(e && e.target !== document.getElementById('espOverlay')) return;
   document.getElementById('espOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, 0);
 }
 
 function espAddCart(){
@@ -1348,12 +1463,12 @@ function espAddCart(){
 function openEspelhinhos(){
   document.getElementById('pers-grid').style.display = 'none';
   document.getElementById('esp-sub').style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function closeEspelhinhos(){
   document.getElementById('esp-sub').style.display = 'none';
   document.getElementById('pers-grid').style.display = 'grid';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
 
@@ -1445,12 +1560,12 @@ function clearSavedCart(){
 function openFotos(){
   document.getElementById('pers-grid').style.display = 'none';
   document.getElementById('fotos-sub').style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function closeFotos(){
   document.getElementById('fotos-sub').style.display = 'none';
   document.getElementById('pers-grid').style.display = 'grid';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'instant'});
 }
 function filterFotos(cat, e){
   document.querySelectorAll('#fotos-cat-bar .cat-btn').forEach(b => b.classList.remove('act'));
@@ -1478,7 +1593,10 @@ function openFnModal(){
 function closeFnModal(e){
   if(e && e.target !== document.getElementById('fnOverlay')) return;
   document.getElementById('fnOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, 0);
 }
 function fnCalc(){
   const tam = document.getElementById('fn-tam').value;
@@ -1611,7 +1729,10 @@ function polGroupChange(){ polCalc(); }
 function closePolModal(e){
   if(e && e.target !== document.getElementById('polOverlay')) return;
   document.getElementById('polOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, 0);
 }
 function polQtyChange(d){
   polQty = Math.max(1, polQty + d);
