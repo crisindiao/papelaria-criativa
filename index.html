@@ -100,16 +100,16 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 .cs h3{font-family:'Playfair Display',serif;font-size:21px;margin-bottom:7px}
 .cs p{color:var(--soft);font-size:14px}
 
-.cfab{position:fixed;bottom:22px;right:18px;z-index:700;background:var(--rose);color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px;cursor:pointer;box-shadow:0 4px 18px rgba(196,115,106,.5);display:none;align-items:center;justify-content:center;transition:transform .2s;line-height:1}
+.cfab{position:fixed;bottom:22px;right:18px;z-index:1000;background:var(--rose);color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px;cursor:pointer;box-shadow:0 4px 18px rgba(196,115,106,.5);display:none;align-items:center;justify-content:center;transition:transform .2s;line-height:1}
 .cfab.vis{display:flex}
 .cfab:active{transform:scale(.92)}
 .cfab-badge{position:absolute;top:-4px;right:-4px;background:#e63946;color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;padding:0 3px;pointer-events:none}
 .wa-float{position:fixed;bottom:18px;left:14px;z-index:300;background:#25D366;color:#fff;border:none;border-radius:50px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(37,211,102,.4);display:flex;align-items:center;gap:7px;text-decoration:none}
 .wa-float:hover{background:#1ebe5d}
 
-.co{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:400;display:none}
+.co{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800;display:none}
 .co.open{display:block}
-.cdraw{position:fixed;right:0;top:0;bottom:0;width:min(400px,100vw);background:#fff;z-index:500;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s;box-shadow:-4px 0 28px rgba(0,0,0,.15)}
+.cdraw{position:fixed;right:0;top:0;bottom:0;width:min(400px,100vw);background:#fff;z-index:900;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s;box-shadow:-4px 0 28px rgba(0,0,0,.15)}
 .cdraw.open{transform:translateX(0)}
 .cdraw-hdr{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .cdraw-hdr h3{font-family:'Playfair Display',serif;font-size:18px}
@@ -411,7 +411,7 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
 
 <div class="co" id="co" onclick="closeCart()"></div>
 <div class="cdraw" id="cdraw">
-  <div class="cdraw-hdr"><h3>🛒 Carrinho</h3><button class="cx" onclick="closeCart()">×</button></div>
+  <div class="cdraw-hdr"><h3>🛒 Carrinho</h3><button onclick="closeCart()" style="background:var(--rose-p);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:var(--rose);font-weight:700">✕</button></div>
   <div class="cbody"><div class="cempty" id="cempty">Nenhum item ainda 😊</div><div id="citems"></div></div>
   <div class="cfooter" id="cfoot" style="display:none">
     <div class="ctrow"><span class="ctlbl">Total</span><span class="ctval" id="ctval">R$ 0,00</span></div>
@@ -1221,8 +1221,10 @@ function sendWA(){
   if(!cart.length)return;
   const tot=cart.reduce((s,i)=>s+i.tot,0);
   let msg='🛒 *Olá! Quero fazer um pedido na Imaginae:*\n\n';
+  const catMap={cong:'📌 Botton',foto:'📌 Botton (foto própria)',arte:'📌 Botton (personalizado)',mp:'🔖 Marca-Página',esp:'🪞 Espelhinho',fn:'📸 Foto Normal',pol:'🎞️ Foto Polaroid'};
   cart.forEach((i,x)=>{
-    msg+=`${x+1}. ${i.mn}\n   ${i.tl} · ${i.s.includes && i.s.includes("cm") ? i.s : i.s+"mm"} · ${i.q}x ${fmt(i.u)} = ${fmt(i.tot)}`;
+    const cat=catMap[i.tp]||'🛍️ Produto';
+    msg+=`${x+1}. [${cat}] ${i.mn}\n   ${i.tl} · ${i.s.includes && i.s.includes("cm") ? i.s : i.s+"mm"} · ${i.q}x ${fmt(i.u)} = ${fmt(i.tot)}`;
     if(i.obs)msg+=`\n   📝 ${i.obs}`;
     if(i.tp==='foto')msg+=`\n   📸 Vou enviar as fotos em seguida`;
     msg+='\n\n';
