@@ -1290,18 +1290,73 @@ function rCart(){
 
 function sendWA(){
   if(!cart.length)return;
-  const tot=cart.reduce((s,i)=>s+i.tot,0);
-  let msg='🛒 *Olá! Quero fazer um pedido na Imaginae:*\n\n';
-  const catMap={cong:'📌 Botton',foto:'📌 Botton (foto própria)',arte:'📌 Botton (personalizado)',mp:'🔖 Marca-Página',esp:'🪞 Espelhinho',fn:'📸 Foto Normal',pol:'🎞️ Foto Polaroid'};
-  cart.forEach((i,x)=>{
-    const cat=catMap[i.tp]||'🛍️ Produto';
-    msg+=`${x+1}. [${cat}] ${i.mn}\n   ${i.tl} · ${i.s.includes && i.s.includes("cm") ? i.s : i.s+"mm"} · ${i.q}x ${fmt(i.u)} = ${fmt(i.tot)}`;
-    if(i.obs)msg+=`\n   📝 ${i.obs}`;
-    if(i.tp==='foto')msg+=`\n   📸 Vou enviar as fotos em seguida`;
-    msg+='\n\n';
-  });
-  msg+=`💰 *Total: ${fmt(tot)}*\n\nAguardo confirmação! 😊`;
-  window.open('https://wa.me/5511981793021?text='+encodeURIComponent(msg),'_blank');
+  abrirModalCliente();
+}
+
+function abrirModalCliente(){
+  const overlay=document.getElementById('cliente-overlay');
+  overlay.style.display='flex';
+  document.getElementById('cliente-error').style.display='none';
+  document.getElementById('cli-nome').value='';
+  document.getElementById('cli-sobrenome').value='';
+  document.getElementById('cli-telefone').value='';
+  setTimeout(()=>document.getElementById('cli-nome').focus(),100);
+}
+
+function fecharModalCliente(){
+  document.getElementById('cliente-overlay').style.display='none';
+}
+
+function mostrarErroModal(msg){
+  const el=document.getElementById('cliente-error');
+  el.textContent=msg;
+  el.style.display='block';
+}
+
+async function confirmarPedido(){
+  const nome=document.getElementById('cli-nome').value.trim();
+  const sobrenome=document.getElementById('cli-sobrenome').value.trim();
+  const telefone=document.getElementById('cli-telefone').value.trim().replace(/\D/g,'');
+  const btn=document.getElementById('cli-btn-enviar');
+
+  if(!nome){mostrarErroModal('Por favor preencha seu nome.');return;}
+  if(!sobrenome){mostrarErroModal('Por favor preencha seu sobrenome.');return;}
+  if(!telefone||telefone.length<10){mostrarErroModal('Por favor preencha um WhatsApp válido com DDD.');return;}
+
+  btn.disabled=true;
+  btn.textContent='Salvando pedido... ⏳';
+
+  try{
+    const nomeCompleto=nome+' '+sobrenome;
+    const {codigo,tot}=await window._fbSalvarPedido(nomeCompleto,telefone,cart);
+
+    const catMap={cong:'📌 Botton',foto:'📌 Botton (foto própria)',arte:'📌 Botton (personalizado)',mp:'🔖 Marca-Página',esp:'🪞 Espelhinho',fn:'📸 Foto Normal',pol:'🎞️ Foto Polaroid'};
+    let msg=`🛒 *Olá! Quero fazer um pedido na Imaginae:*\n`;
+    msg+=`📋 *Pedido: ${codigo}*\n`;
+    msg+=`👤 *${nomeCompleto}*\n\n`;
+    cart.forEach((i,x)=>{
+      const cat=catMap[i.tp]||'🛍️ Produto';
+      msg+=`${x+1}. [${cat}] ${i.mn}\n   ${i.tl} · ${i.s.includes && i.s.includes("cm") ? i.s : i.s+"mm"} · ${i.q}x ${fmt(i.u)} = ${fmt(i.tot)}`;
+      if(i.obs)msg+=`\n   📝 ${i.obs}`;
+      if(i.tp==='foto')msg+=`\n   📸 Vou enviar as fotos em seguida`;
+      msg+='\n\n';
+    });
+    msg+=`💰 *Total: ${fmt(tot)}*\n\n`;
+    msg+=`✅ Pedido registrado com o código *${codigo}*.\nAguardo confirmação! 😊`;
+
+    fecharModalCliente();
+    cart=[];
+    rCart();
+    clearSavedCart();
+    window.open('https://wa.me/5511981793021?text='+encodeURIComponent(msg),'_blank');
+
+  }catch(e){
+    mostrarErroModal('Erro ao registrar pedido. Tente novamente.');
+    console.error(e);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Registrar e enviar no WhatsApp 🚀';
+  }
 }
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
@@ -2080,6 +2135,118 @@ function polAddCart(){
     </div>
   </div>
 </div>
+
+<!-- MODAL: Dados do Cliente -->
+<div id="cliente-overlay" style="display:none;position:fixed;inset:0;background:rgba(61,44,46,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;box-shadow:0 8px 30px rgba(92,58,63,0.15);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#5C3A3F;">Antes de enviar...</div>
+        <div style="font-size:12px;color:#B76E79;margin-top:2px;">Precisamos dos seus dados 😊</div>
+      </div>
+      <button onclick="fecharModalCliente()" style="background:none;border:none;font-size:20px;color:#C9A9A6;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div id="cliente-error" style="display:none;background:#F3E4E4;color:#9A5555;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <input id="cli-nome" type="text" placeholder="Nome *" maxlength="50"
+        style="padding:12px 14px;border:1.5px solid #EEDDD9;border-radius:12px;font-size:15px;color:#3D2C2E;outline:none;width:100%;box-sizing:border-box;">
+      <input id="cli-sobrenome" type="text" placeholder="Sobrenome *" maxlength="50"
+        style="padding:12px 14px;border:1.5px solid #EEDDD9;border-radius:12px;font-size:15px;color:#3D2C2E;outline:none;width:100%;box-sizing:border-box;">
+      <input id="cli-telefone" type="tel" placeholder="WhatsApp com DDD * ex: 11987654321" maxlength="20"
+        style="padding:12px 14px;border:1.5px solid #EEDDD9;border-radius:12px;font-size:15px;color:#3D2C2E;outline:none;width:100%;box-sizing:border-box;">
+    </div>
+    <button id="cli-btn-enviar" onclick="confirmarPedido()"
+      style="margin-top:16px;width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#C08497,#B76E79);color:#fff;font-size:15px;font-weight:600;cursor:pointer;">
+      Registrar e enviar no WhatsApp 🚀
+    </button>
+    <p style="font-size:11px;color:#B9A4A0;text-align:center;margin-top:10px;">
+      Seus dados são usados apenas para o pedido.
+    </p>
+  </div>
+</div>
+
+<!-- Firebase: salvar pedido no mesmo banco do APK-pedidos -->
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpd0JoVFUcPy-Ep66hsTpc187_2F_DI24",
+    authDomain: "imaginae-37bc1.firebaseapp.com",
+    projectId: "imaginae-37bc1",
+    storageBucket: "imaginae-37bc1.firebasestorage.app",
+    messagingSenderId: "676368164608",
+    appId: "1:676368164608:web:9d5761c4ef270f4b0d75e5",
+  };
+
+  const fbApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  const db = getFirestore(fbApp);
+  const DOC_REF = doc(db, "imaginae", "dados");
+
+  async function carregarDados(){
+    try{
+      const snap = await getDoc(DOC_REF);
+      if(snap.exists() && snap.data()["imaginae:dados"])
+        return JSON.parse(snap.data()["imaginae:dados"]);
+    }catch(e){}
+    return null;
+  }
+
+  async function salvarDados(dados){
+    await setDoc(DOC_REF,{
+      "imaginae:dados": JSON.stringify(dados),
+      _updatedBy: "site-cliente",
+      _updatedAt: serverTimestamp()
+    },{merge:true});
+  }
+
+  function gerarCodigo(seq){ return `IMG-${String(seq).padStart(3,'0')}`; }
+
+  function mapearItens(cart){
+    const catMap={cong:'Bottons',foto:'Bottons',arte:'Bottons',mp:'Marcadores',esp:'Espelhos de Bolso',fn:'Fotos Personalizadas',pol:'Fotos Personalizadas'};
+    return cart.map(i=>({
+      id:`${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+      produtoId: i.mid||i.tp,
+      produtoNome: i.mn,
+      quantidade: i.q,
+      detalhe:`${i.tl} · ${i.s}`,
+      obs: i.obs||'',
+      categoria: catMap[i.tp]||'Outros'
+    }));
+  }
+
+  window._fbSalvarPedido = async function(nomeCompleto, telefone, cart){
+    const dados = await carregarDados() || {pedidos:[],produtos:[],gastos:[],picked:{},seq:1};
+    const seq = dados.seq||1;
+    const codigo = gerarCodigo(seq);
+    const tot = cart.reduce((s,i)=>s+i.tot,0);
+
+    const novoPedido = {
+      id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+      codigo, cliente: nomeCompleto, contato: telefone,
+      canal:"WhatsApp",
+      itens: mapearItens(cart),
+      valorTotal: tot.toFixed(2),
+      formaPagamento:"PIX Direto",
+      status:"Pendente",
+      dataPedido: new Date().toISOString().slice(0,10),
+      prazoEntrega:"",
+      observacoes:"Pedido recebido pelo site",
+      origem:"site"
+    };
+
+    dados.pedidos = [novoPedido,...(dados.pedidos||[])];
+    dados.seq = seq+1;
+    await salvarDados(dados);
+    return {codigo, tot};
+  };
+
+  // Fechar modal ao clicar fora
+  document.getElementById('cliente-overlay').addEventListener('click',function(e){
+    if(e.target===this) fecharModalCliente();
+  });
+</script>
 
 <!-- Botão WhatsApp sempre visível -->
 <a href="https://wa.me/5511981793021?text=Ol%C3%A1!%20Tenho%20interesse%20nos%20produtos%20da%20IMAGINAE%20%F0%9F%98%8A" target="_blank" class="wa-float" aria-label="Falar no WhatsApp">
