@@ -388,7 +388,10 @@ body{font-family:'Inter',sans-serif;background:radial-gradient(ellipse at 60% 40
       <img class="brand-logo" src="https://res.cloudinary.com/jrmiaduy/image/upload/v1785117441/gclzj4bbnflaxvhcimta.png" alt="Imaginae">
       <div><div class="brand-name">IMAGINAE</div><div class="brand-sub">Papelaria Criativa</div></div>
     </div>
-    <button class="cart-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="track-btn" onclick="abrirRastreio()" style="background:var(--teal-p);border:1.5px solid var(--teal-l);border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--teal);cursor:pointer;white-space:nowrap">📦 Meu pedido</button>
+      <button class="cart-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+    </div>
   </div>
 
 </header>
@@ -2169,6 +2172,28 @@ function polAddCart(){
 </div>
 
 <!-- MODAL: Dados do Cliente -->
+<div id="rastreio-overlay" style="display:none;position:fixed;inset:0;background:rgba(61,44,46,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;box-shadow:0 8px 30px rgba(92,58,63,0.15);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#5C3A3F;">Acompanhar pedido</div>
+        <div style="font-size:12px;color:#B76E79;margin-top:2px;">Digite o código que você recebeu 😊</div>
+      </div>
+      <button onclick="fecharRastreio()" style="background:none;border:none;font-size:20px;color:#C9A9A6;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div id="rastreio-error" style="display:none;background:#F3E4E4;color:#9A5555;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;"></div>
+    <div id="rastreio-form" style="display:flex;flex-direction:column;gap:10px;">
+      <input id="rastreio-codigo" type="text" placeholder="Ex: IMG-XXXXXXXXXXX" maxlength="30"
+        style="padding:12px 14px;border:1.5px solid #EEDDD9;border-radius:12px;font-size:15px;color:#3D2C2E;outline:none;width:100%;box-sizing:border-box;text-transform:uppercase;">
+      <button id="rastreio-btn" onclick="consultarPedido()"
+        style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#C08497,#B76E79);color:#fff;font-size:15px;font-weight:600;cursor:pointer;">
+        Consultar 🔍
+      </button>
+    </div>
+    <div id="rastreio-resultado" style="display:none;"></div>
+  </div>
+</div>
+
 <div id="cliente-overlay" style="display:none;position:fixed;inset:0;background:rgba(61,44,46,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;box-shadow:0 8px 30px rgba(92,58,63,0.15);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -2200,7 +2225,7 @@ function polAddCart(){
 <!-- Firebase: salvar pedido em subcoleção própria (o site só CRIA, nunca lê/edita/apaga) -->
 <script type="module">
   import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp }
+  import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -2214,10 +2239,11 @@ function polAddCart(){
 
   const fbApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   const db = getFirestore(fbApp);
-  // Cada pedido agora é um documento independente dentro desta subcoleção.
-  // O site NUNCA lê essa coleção — só cria (addDoc). Isso permite uma regra
-  // de segurança do tipo "allow create; disallow read, update, delete" para
-  // visitantes não autenticados, protegendo os dados de todos os clientes.
+  // Cada pedido é um documento independente dentro desta subcoleção, usando o
+  // próprio código do pedido como ID do documento. Isso permite que o cliente
+  // consulte o status pelo código (getDoc por ID), sem precisar de permissão
+  // para listar ou ler os pedidos de outras pessoas — só quem tem o código exato
+  // (gerado no navegador, não sequencial) consegue abrir aquele documento.
   const PEDIDOS_REF = collection(db, "imaginae", "dados", "pedidos");
 
   // Código local, gerado no navegador (não depende de ler o banco).
@@ -2259,9 +2285,74 @@ function polAddCart(){
       criadoEm: serverTimestamp()
     };
 
-    // addDoc = create-only. Não lê, não edita, não apaga nada existente.
-    await addDoc(PEDIDOS_REF, novoPedido);
+    // setDoc com ID = código: cria o documento, não sobrescreve nada existente
+    // (o código é único), e permite consulta posterior por ID.
+    await setDoc(doc(PEDIDOS_REF, codigo), novoPedido);
     return {codigo, tot};
+  };
+
+  // ---------- Rastreio de pedido (consulta pública, só leitura por código exato) ----------
+  const STATUS_LABEL = {
+    Pendente:'Pedido recebido, aguardando confirmação',
+    Em_producao:'Em produção 🧵',
+    Enviado:'Enviado 🚚',
+    Entregue:'Entregue ✅',
+    Cancelado:'Cancelado'
+  };
+
+  window.abrirRastreio = function(){
+    document.getElementById('rastreio-overlay').style.display='flex';
+    document.getElementById('rastreio-form').style.display='flex';
+    document.getElementById('rastreio-resultado').style.display='none';
+    document.getElementById('rastreio-error').style.display='none';
+    document.getElementById('rastreio-codigo').value='';
+  };
+  window.fecharRastreio = function(){
+    document.getElementById('rastreio-overlay').style.display='none';
+  };
+  document.getElementById('rastreio-overlay').addEventListener('click', function(e){
+    if(e.target===this) fecharRastreio();
+  });
+
+  window.consultarPedido = async function(){
+    const errEl = document.getElementById('rastreio-error');
+    const resEl = document.getElementById('rastreio-resultado');
+    const codigo = document.getElementById('rastreio-codigo').value.trim().toUpperCase();
+    errEl.style.display='none';
+    if(!codigo){
+      errEl.textContent = 'Digite o código do pedido.';
+      errEl.style.display='block';
+      return;
+    }
+    const btn = document.getElementById('rastreio-btn');
+    btn.disabled = true; btn.textContent = 'Consultando...';
+    try{
+      const snap = await getDoc(doc(PEDIDOS_REF, codigo));
+      if(!snap.exists()){
+        errEl.textContent = 'Não encontramos pedido com esse código. Confira e tente de novo.';
+        errEl.style.display='block';
+        resEl.style.display='none';
+      } else {
+        const p = snap.data();
+        const statusTxt = STATUS_LABEL[p.status] || p.status || 'Pendente';
+        const itensTxt = (p.itens||[]).map(i=>`${i.quantidade}x ${i.produtoNome} (${i.detalhe})`).join('<br>');
+        resEl.innerHTML = `
+          <div style="margin-top:14px;padding:14px;background:var(--teal-p);border-radius:14px;border:1.5px solid var(--teal-l)">
+            <div style="font-size:12px;color:var(--soft);margin-bottom:4px">Pedido ${p.codigo}</div>
+            <div style="font-size:16px;font-weight:700;color:var(--teal);margin-bottom:8px">${statusTxt}</div>
+            <div style="font-size:12.5px;color:#3D2C2E;line-height:1.6">${itensTxt}</div>
+            <div style="font-size:12.5px;color:var(--soft);margin-top:8px">Total: R$ ${parseFloat(p.valorTotal||0).toFixed(2).replace('.',',')}</div>
+          </div>`;
+        resEl.style.display='block';
+        document.getElementById('rastreio-form').style.display='none';
+      }
+    }catch(err){
+      console.error('Erro ao consultar pedido:', err);
+      errEl.textContent = 'Erro ao consultar. Tente novamente em instantes.';
+      errEl.style.display='block';
+    }finally{
+      btn.disabled = false; btn.textContent = 'Consultar 🔍';
+    }
   };
 
   // Fechar modal ao clicar fora
